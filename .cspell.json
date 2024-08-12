@@ -481,7 +481,9 @@
     "specced",
     "composables",
     "countup",
-    "darkmatter"
+    "darkmatter",
+    "Undeletes",
+    "SSSZ"
   ],
   "dictionaries": ["npm", "softwareTerms", "node", "html", "css", "bash", "en_US", "en-gb", "misc"],
   "ignorePaths": [
