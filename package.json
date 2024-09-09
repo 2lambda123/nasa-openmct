@@ -22,7 +22,7 @@
     "@types/d3-selection": "3.0.10",
     "@types/d3-shape": "3.0.0",
     "@types/eventemitter3": "2.0.2",
-    "@types/jasmine": "5.1.2",
+    "@types/jasmine": "5.1.4",
     "@types/lodash": "4.17.0",
     "@vue/compiler-sfc": "3.5.1",
     "babel-loader": "9.1.0",
