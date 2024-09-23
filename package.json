@@ -24,7 +24,7 @@
     "@types/eventemitter3": "2.0.2",
     "@types/jasmine": "5.1.4",
     "@types/lodash": "4.17.0",
-    "@vue/compiler-sfc": "3.5.5",
+    "@vue/compiler-sfc": "3.5.8",
     "babel-loader": "9.1.0",
     "babel-plugin-istanbul": "7.0.0",
     "codecov": "3.8.3",
