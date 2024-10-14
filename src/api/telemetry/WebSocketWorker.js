@@ -22,7 +22,7 @@
 /* eslint-disable max-classes-per-file */
 export default function installWorker() {
   const ONE_SECOND = 1000;
-  const FALLBACK_AND_WAIT_MS = [ 1000, 5000, 5000, 10000, 10000, 30000 ];
+  const FALLBACK_AND_WAIT_MS = [1000, 5000, 5000, 10000, 10000, 30000];
 
   /**
    * @typedef {import('./BatchingWebSocket').BatchingStrategy} BatchingStrategy
@@ -85,11 +85,15 @@ export default function installWorker() {
       const boundMessage = this.#message.bind(this);
       this.#webSocket.addEventListener('message', boundMessage);
 
-      this.addEventListener('disconnected', () => {
-        this.#webSocket.removeEventListener('open', boundConnected);
-        this.#webSocket.removeEventListener('error', boundCleanUpAndReconnect);
-        this.#webSocket.removeEventListener('close', boundCleanUpAndReconnect);
-      }, {once : true});
+      this.addEventListener(
+        'disconnected',
+        () => {
+          this.#webSocket.removeEventListener('open', boundConnected);
+          this.#webSocket.removeEventListener('error', boundCleanUpAndReconnect);
+          this.#webSocket.removeEventListener('close', boundCleanUpAndReconnect);
+        },
+        { once: true }
+      );
     }
 
     /**
@@ -104,8 +108,7 @@ export default function installWorker() {
       this.#messageCallbacks.push(callback);
 
       return () => {
-        this.#messageCallbacks =
-            this.#messageCallbacks.filter((cb) => cb !== callback);
+        this.#messageCallbacks = this.#messageCallbacks.filter((cb) => cb !== callback);
       };
     }
 
@@ -116,7 +119,7 @@ export default function installWorker() {
       this.#currentWaitIndex = 0;
 
       if (this.#reconnecting) {
-        this.#worker.postMessage({type : 'reconnected'});
+        this.#worker.postMessage({ type: 'reconnected' });
         this.#reconnecting = false;
       }
 
@@ -202,47 +205,47 @@ export default function installWorker() {
     }
 
     routeMessageToHandler(message) {
-      const {type} = message.data;
+      const { type } = message.data;
       switch (type) {
-      case 'connect':
-        this.connect(message);
-        break;
-      case 'disconnect':
-        this.disconnect(message);
-        break;
-      case 'message':
-        this.#websocket.enqueueMessage(message.data.message);
-        break;
-      case 'setBatchingStrategy':
-        this.setBatchingStrategy(message);
-        break;
-      case 'readyForNextBatch':
-        this.#messageBatcher.readyForNextBatch();
-        break;
-      case 'setMaxBatchSize':
-        this.#messageBatcher.setMaxBatchSize(message.data.maxBatchSize);
-        break;
-      case 'setMaxBatchWait':
-        this.#messageBatcher.setMaxBatchWait(message.data.maxBatchWait);
-        break;
-      default:
-        throw new Error(`Unknown message type: ${type}`);
+        case 'connect':
+          this.connect(message);
+          break;
+        case 'disconnect':
+          this.disconnect(message);
+          break;
+        case 'message':
+          this.#websocket.enqueueMessage(message.data.message);
+          break;
+        case 'setBatchingStrategy':
+          this.setBatchingStrategy(message);
+          break;
+        case 'readyForNextBatch':
+          this.#messageBatcher.readyForNextBatch();
+          break;
+        case 'setMaxBatchSize':
+          this.#messageBatcher.setMaxBatchSize(message.data.maxBatchSize);
+          break;
+        case 'setMaxBatchWait':
+          this.#messageBatcher.setMaxBatchWait(message.data.maxBatchWait);
+          break;
+        default:
+          throw new Error(`Unknown message type: ${type}`);
       }
     }
     connect(message) {
-      const {url} = message.data;
+      const { url } = message.data;
       this.#websocket.connect(url);
     }
-    disconnect() { this.#websocket.disconnect(); }
+    disconnect() {
+      this.#websocket.disconnect();
+    }
     setBatchingStrategy(message) {
-      const {serializedStrategy} = message.data;
+      const { serializedStrategy } = message.data;
       const batchingStrategy = {
         // eslint-disable-next-line no-new-func
-        shouldBatchMessage :
-            new Function(`return ${serializedStrategy.shouldBatchMessage}`)(),
+        shouldBatchMessage: new Function(`return ${serializedStrategy.shouldBatchMessage}`)(),
         // eslint-disable-next-line no-new-func
-        getBatchIdFromMessage :
-            new Function(`return ${serializedStrategy.getBatchIdFromMessage}`)()
+        getBatchIdFromMessage: new Function(`return ${serializedStrategy.getBatchIdFromMessage}`)()
         // Will also include maximum batch length here
       };
       this.#messageBatcher.setBatchingStrategy(batchingStrategy);
@@ -266,7 +269,7 @@ export default function installWorker() {
       if (this.#messageBatcher.shouldBatchMessage(data)) {
         this.#messageBatcher.addMessageToBatch(data);
       } else {
-        this.#worker.postMessage({type : 'message', message : data});
+        this.#worker.postMessage({ type: 'message', message: data });
       }
     }
   }
@@ -299,7 +302,9 @@ export default function installWorker() {
     /**
      * @param {BatchingStrategy} strategy
      */
-    setBatchingStrategy(strategy) { this.#batchingStrategy = strategy; }
+    setBatchingStrategy(strategy) {
+      this.#batchingStrategy = strategy;
+    }
     /**
      * Applies the `shouldBatchMessage` function from the supplied batching
      * strategy to each message to determine if it should be added to a batch.
@@ -312,8 +317,10 @@ export default function installWorker() {
      * @returns
      */
     shouldBatchMessage(message) {
-      return (this.#batchingStrategy.shouldBatchMessage &&
-              this.#batchingStrategy.shouldBatchMessage(message));
+      return (
+        this.#batchingStrategy.shouldBatchMessage &&
+        this.#batchingStrategy.shouldBatchMessage(message)
+      );
     }
     /**
      * Adds the given message to a batch. The batch group that the message is
@@ -329,13 +336,14 @@ export default function installWorker() {
       let batch = this.#batch[batchId];
       if (batch === undefined) {
         this.#hasBatch = true;
-        batch = this.#batch[batchId] = [ message ];
+        batch = this.#batch[batchId] = [message];
       } else {
         batch.push(message);
       }
       if (batch.length > this.#maxBatchSize) {
-        console.warn(`Exceeded max batch size of ${this.#maxBatchSize} for ${
-            batchId}. Dropping value.`);
+        console.warn(
+          `Exceeded max batch size of ${this.#maxBatchSize} for ${batchId}. Dropping value.`
+        );
         batch.shift();
         this.#batch.dropped = true;
       }
@@ -344,10 +352,11 @@ export default function installWorker() {
         this.#throttledSendNextBatch();
       }
     }
-    setMaxBatchSize(maxBatchSize) { this.#maxBatchSize = maxBatchSize; }
+    setMaxBatchSize(maxBatchSize) {
+      this.#maxBatchSize = maxBatchSize;
+    }
     setMaxBatchWait(maxBatchWait) {
-      this.#throttledSendNextBatch =
-          throttle(this.#sendNextBatch.bind(this), maxBatchWait);
+      this.#throttledSendNextBatch = throttle(this.#sendNextBatch.bind(this), maxBatchWait);
     }
     /**
      * Indicates that client code is ready to receive the next batch of
@@ -365,7 +374,7 @@ export default function installWorker() {
     #sendNextBatch() {
       const batch = this.#batch;
       this.#resetBatch();
-      this.#worker.postMessage({type : 'batch', batch});
+      this.#worker.postMessage({ type: 'batch', batch });
       this.#readyForNextBatch = false;
       this.#hasBatch = false;
     }
@@ -375,7 +384,7 @@ export default function installWorker() {
     let last = 0;
     let throttling = false;
 
-    return function(...args) {
+    return function (...args) {
       if (throttling) {
         return;
       }
@@ -400,13 +409,10 @@ export default function installWorker() {
 
   const websocket = new ResilientWebSocket(self);
   const messageBatcher = new MessageBatcher(self);
-  const workerBroker =
-      new WorkerToWebSocketMessageBroker(websocket, messageBatcher);
-  const websocketBroker =
-      new WebSocketToWorkerMessageBroker(messageBatcher, self);
+  const workerBroker = new WorkerToWebSocketMessageBroker(websocket, messageBatcher);
+  const websocketBroker = new WebSocketToWorkerMessageBroker(messageBatcher, self);
 
-  const trustedOrigins =
-      [ 'https://www.example.com' ]; // Add your trusted origins here
+  const trustedOrigins = ['https://www.example.com']; // Add your trusted origins here
   self.addEventListener('message', (message) => {
     if (trustedOrigins.includes(message.origin)) {
       workerBroker.routeMessageToHandler(message);
@@ -414,8 +420,9 @@ export default function installWorker() {
       console.warn('Untrusted origin:', message.origin);
     }
   });
-  websocket.registerMessageCallback(
-      (data) => { websocketBroker.routeMessageToHandler(data); });
+  websocket.registerMessageCallback((data) => {
+    websocketBroker.routeMessageToHandler(data);
+  });
 
   self.websocketInstance = websocket;
 }
