@@ -412,8 +412,13 @@ export default function installWorker() {
   const workerBroker = new WorkerToWebSocketMessageBroker(websocket, messageBatcher);
   const websocketBroker = new WebSocketToWorkerMessageBroker(messageBatcher, self);
 
+  const trustedOrigins = ['https://www.example.com']; // Add your trusted origins here
   self.addEventListener('message', (message) => {
-    workerBroker.routeMessageToHandler(message);
+    if (trustedOrigins.includes(message.origin)) {
+      workerBroker.routeMessageToHandler(message);
+    } else {
+      console.warn('Untrusted origin:', message.origin);
+    }
   });
   websocket.registerMessageCallback((data) => {
     websocketBroker.routeMessageToHandler(data);
