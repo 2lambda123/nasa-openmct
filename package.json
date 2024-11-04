@@ -81,7 +81,7 @@
     "resolve-url-loader": "5.0.0",
     "sanitize-html": "2.13.0",
     "sass": "1.80.4",
-    "sass-loader": "16.0.2",
+    "sass-loader": "16.0.3",
     "style-loader": "4.0.0",
     "terser-webpack-plugin": "5.3.10",
     "tiny-emitter": "2.1.0",
