@@ -14,7 +14,7 @@
     "test:visual": "percy exec"
   },
   "devDependencies": {
-    "@percy/cli": "1.30.4",
+    "@percy/cli": "1.30.5",
     "@percy/playwright": "1.0.7",
     "@playwright/test": "1.45.2",
     "@axe-core/playwright": "4.10.1"
