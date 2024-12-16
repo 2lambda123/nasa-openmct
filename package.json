@@ -83,7 +83,7 @@
     "sass": "1.81.0",
     "sass-loader": "16.0.4",
     "style-loader": "4.0.0",
-    "terser-webpack-plugin": "5.3.10",
+    "terser-webpack-plugin": "5.3.11",
     "tiny-emitter": "2.1.0",
     "typescript": "5.7.2",
     "uuid": "11.0.3",
