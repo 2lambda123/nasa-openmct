@@ -18,7 +18,7 @@
     "@babel/eslint-parser": "7.26.5",
     "@braintree/sanitize-url": "7.1.1",
     "@types/d3-axis": "3.0.6",
-    "@types/d3-scale": "4.0.8",
+    "@types/d3-scale": "4.0.9",
     "@types/d3-selection": "3.0.11",
     "@types/d3-shape": "3.1.7",
     "@types/eventemitter3": "2.0.4",
