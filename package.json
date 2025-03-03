@@ -25,7 +25,7 @@
     "@types/jasmine": "5.1.7",
     "@types/lodash": "4.17.0",
     "@vue/compiler-sfc": "3.5.13",
-    "babel-loader": "9.2.1",
+    "babel-loader": "10.0.0",
     "babel-plugin-istanbul": "7.0.0",
     "codecov": "3.8.3",
     "comma-separated-values": "3.6.4",
